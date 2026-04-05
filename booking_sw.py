@@ -1,5 +1,7 @@
 import streamlit as st
 import csv
+import pandas as pd
+import os
 
 date = st.date_input("Select a date")
 
@@ -26,6 +28,24 @@ def check_avail(date, time, new_people):
             if row[1] == str(date) and row[2] == time:
                 total += int(row[3])
     return total +new_people <= 35
+
+CSV_FILE = "bookings.csv"
+
+def save_booking(name, date, time, guests):
+    new_data = pd.DataFrame([{
+        "name": name,
+        "date": date,
+        "time": time,
+        "guests": guests
+    }])
+
+
+    if os.path.exists(CSV_FILE):
+        old_data = pd.read_csv(CSV_FILE)
+        updated = pd.concat([old_data, new_data], ignore_index=True)
+        updated.to_csv(CSV_FILE, index=False)
+    else:
+        new_data.to_csv(CSV_FILE, index=False)
 
 
 
