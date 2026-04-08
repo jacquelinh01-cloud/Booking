@@ -1,0 +1,5 @@
+credentials.json
+bookings.csv
+*.csv
+.env
+__pycache__/
