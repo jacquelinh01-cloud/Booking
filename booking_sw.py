@@ -8,7 +8,7 @@ name = st.text_input("Name")
 email = st.text_input("Email")
 date = st.date_input("Select a date")
 time = st.selectbox("Select time", ["9:00 AM", "1:00 PM", "5:00 PM"])
-service = st.text_input("Service", ["Local", "Standard"])
+service = st.selectbox("Service", ["Local", "Standard"])
 guests = st.number_input("Guests", min_value=1)
 
 scope = [
@@ -42,6 +42,8 @@ def check_avail(date, time, new_guests):
     records = worksheet.get_all_records()
 
     for row in records:
+        row = {k.strip().lower(): v for k, v in row.items()}
+        
         if str(row['date']) == str(date) and row['time'] == time:
             total += int(row['guests'])
     return total + new_guests <= 35
