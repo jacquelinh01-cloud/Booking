@@ -27,7 +27,7 @@ sheet = client.open_by_key("1d7Pc_Va8rMhfPBYzjPMeKPpuYPfpRCpc9vBB1_yP_64")
 
 worksheet = sheet.worksheet("Bookings")
 
-def save_booking(name, date, time, guests):
+def save_booking(name, email, date, time, service, guests):
     worksheet.append_row([
         name,
         email,
@@ -43,7 +43,7 @@ def check_avail(date, time, new_guests):
 
     for row in records:
         row = {k.strip().lower(): v for k, v in row.items()}
-        
+
         if str(row['date']) == str(date) and row['time'] == time:
             total += int(row['guests'])
     return total + new_guests <= 35
