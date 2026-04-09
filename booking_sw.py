@@ -10,6 +10,29 @@ date = st.date_input("Select a date")
 time = st.selectbox("Select time", ["9:00 AM", "1:00 PM", "5:00 PM"])
 service = st.selectbox("Service", ["Local", "Standard"])
 guests = st.number_input("Guests", min_value=1)
+infants = st.number_input("Number of Infants (Ages 0-2)", min_value=0, max_value=guests)
+
+if infants > guests:
+    st.error("Infants cannot exceed total guests")
+    st.stop()
+lunch_count = guests - infants
+
+
+payment_method = st.selectbox("Select a Payment Method", ["Pay Later", "Pay on Arrival", "Card (Coming soon)!"])
+
+
+lunch_options = [
+    "Smoked Salmon Wrap",
+    "Grilled Chicken Wrap",
+    "Vegan Hummus Wrap",
+    "Peanut Butter and Jelly Sandwich",
+    "Ham and Cheese Sandwich"
+]
+
+lunch_choices = []
+for passenger in range(lunch_count):
+    choice = st.selectbox(f'Lunch for passenger {passenger+1}', lunch_options, key=f"lunch_{passenger}")
+    lunch_choices.append(choice)
 
 scope = [
     "https://spreadsheets.google.com/feeds",
@@ -27,14 +50,19 @@ sheet = client.open_by_key("1d7Pc_Va8rMhfPBYzjPMeKPpuYPfpRCpc9vBB1_yP_64")
 
 worksheet = sheet.worksheet("Bookings")
 
-def save_booking(name, email, date, time, service, guests):
+
+
+def save_booking(name, email, date, time, service, guests, infants, lunches, payment_method):
     worksheet.append_row([
         name,
         email,
         str(date),
         time,
         service,
-        guests
+        guests,
+        infants,
+        ", ".join(lunches),
+        payment_method
     ])
 
 def check_avail(date, time, new_guests):
@@ -52,7 +80,7 @@ def check_avail(date, time, new_guests):
 
 if st.button("Book Now"):
     if check_avail(date, time, guests):
-        save_booking(name, email, date, time, service, guests)
+        save_booking(name, email, date, time, service, guests, infants, lunch_choices, payment_method)
         st.success("Booking saved!")
     else:
         st.error("Slot full")
