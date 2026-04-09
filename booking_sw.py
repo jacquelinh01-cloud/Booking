@@ -2,6 +2,36 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
+st.markdown("""
+    <style>
+    .stApp {
+        background: linear-gradient(to bottom right, #0f172a, #1e3a8a);
+        color: white;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    h1, h2, h3 {
+        color: #f8fafc;
+    }
+
+    .stButton>button {
+        background-color: #2563eb;
+        color: white;
+        border-radius: 10px;
+        height: 3em;
+        width: 100%;
+    }
+
+    .stButton>button:hover {
+        background-color: #1d4ed8;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 if "page" not in st.session_state:
     st.session_state.page = "booking"
 
@@ -89,10 +119,10 @@ def confirm_page():
                     data["lunches"],
                     data["payment"]
                 )
-                st.success("Booking saved!")
+                st.success("Booking saved! We look forward to seeing you!")
                 st.session_state.page = "booking"
             else:
-                st.error("Slot full")
+                st.error("Slot full. Please try another date and time")
 
 scope = [
     "https://spreadsheets.google.com/feeds",
