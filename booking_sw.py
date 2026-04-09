@@ -80,13 +80,13 @@ def check_avail(date, time, new_guests):
 if st.button("Confirm Booking"):
     st.subheader("Confirm Your Booking")
 
-    st.write("Name: {name}")
-    st.write("Email: {email}")
-    st.write("Date: {date}")
-    st.write("Time: {time}")
-    st.write("Service: {service}")
-    st.write("Infants: {infants}")
-    st.write("Payment: {payment_method}")
+    st.write(f"Name: {name}")
+    st.write(f"Email: {email}")
+    st.write(f"Date: {date}")
+    st.write(f"Time: {time}")
+    st.write(f"Service: {service}")
+    st.write(f"Infants: {infants}")
+    st.write(f"Payment: {payment_method}")
     st.write("Lunch/Lunches:")
     for passenger, lunch in enumerate(lunch_choices, 1):
         st.write(f"Passenger {passenger}: {lunch}")
