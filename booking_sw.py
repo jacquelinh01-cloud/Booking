@@ -39,6 +39,7 @@ def booking_page():
     st.title("Whales and Lunch Tours")
     st.subheader("Book your unforgettable ocean experience")
 
+    st.divider()
     st.markdown("## 👤 Your Information")
     name = st.text_input("Name")
     email = st.text_input("Email")
@@ -63,12 +64,14 @@ def booking_page():
         "Ham and Cheese Sandwich"
     ]
 
+    st.divider()
     st.markdown("## 🍽️ Lunch Selection")
     lunch_choices = []
     for passenger in range(lunch_count):
         choice = st.selectbox(f'Lunch for passenger {passenger+1}', lunch_options, key=f"lunch_{passenger}")
         lunch_choices.append(choice)
 
+    st.divider()
     st.markdown("## 💳 Payment")
     payment_method = st.selectbox("Select a Payment Method", ["Pay Later", "Pay on Arrival", "Card (Coming soon)!"])
     
