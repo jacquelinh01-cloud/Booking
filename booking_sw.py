@@ -2,6 +2,25 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=scope
+)
+
+client = gspread.authorize(creds)
+
+sheet = client.open_by_key("1d7Pc_Va8rMhfPBYzjPMeKPpuYPfpRCpc9vBB1_yP_64")
+
+worksheet = sheet.worksheet("Bookings")
+
+def is_admin(email):
+    return email in st.secrets["auth"]["admin_users"]
+
 st.markdown("""
     <style>
     .stApp {
@@ -31,6 +50,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
 
 if "page" not in st.session_state:
     st.session_state.page = "booking"
@@ -132,23 +152,6 @@ def confirm_page():
             else:
                 st.error("Slot full. Please try another date and time")
 
-scope = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/drive"
-]
-
-creds = Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
-    scopes=scope
-)
-
-client = gspread.authorize(creds)
-
-sheet = client.open_by_key("1d7Pc_Va8rMhfPBYzjPMeKPpuYPfpRCpc9vBB1_yP_64")
-
-worksheet = sheet.worksheet("Bookings")
-
-
 
 def save_booking(name, email, date, time, service, guests, infants, lunches, payment_method):
     worksheet.append_row([
@@ -174,9 +177,28 @@ def check_avail(date, time, new_guests):
             total += int(row['guests'])
     return total + new_guests <= 21
 
+user_email = st.sidebar.text_input("Email (Admin Access)")
+admin_mode = st.sidebar.checkbox("Admin Dashboard")
+
 if st.session_state.page == "booking":
     booking_page()
 else:
     confirm_page()
+
+
+if admin_mode:
+    if user_email and is_admin(user_email):
+        st.title("📊 Admin Dashboard")
+
+        data = worksheet.get_all_records()
+        st.dataframe(data)
+
+        st.metric("Total Bookings", len(data))
+        st.metric(
+            "Total Guests",
+            sum(int(row.get("guests", 0)) for row in data)
+        )
+    elif admin_mode:
+        st.error("Unauthorized access")
 
 
