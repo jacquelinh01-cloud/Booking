@@ -46,7 +46,7 @@ def check_avail(date, time, new_guests):
 
         if str(row['date']) == str(date) and row['time'] == time:
             total += int(row['guests'])
-    return total + new_guests <= 35
+    return total + new_guests <= 21
 
 
 
