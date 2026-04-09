@@ -76,9 +76,14 @@ def check_avail(date, time, new_guests):
             total += int(row['guests'])
     return total + new_guests <= 21
 
+if "review" not in st.session_state:
+    st.session_state.review = False
 
-if st.button("Confirm Booking"):
-    st.subheader("Confirm Your Booking")
+if st.button("Review Booking"):
+    st.session_state.review = True
+
+if st.session_state.review:
+    st.subheader("Confirm your booking")
 
     st.write(f"Name: {name}")
     st.write(f"Email: {email}")
@@ -88,15 +93,15 @@ if st.button("Confirm Booking"):
     st.write(f"Infants: {infants}")
     st.write(f"Payment: {payment_method}")
     st.write("Lunch/Lunches:")
+    
     for passenger, lunch in enumerate(lunch_choices, 1):
         st.write(f"Passenger {passenger}: {lunch}")
 
-    confirm = st.button("Confirm Booking")
-
-    if confirm:
+    if st.button("Confirm your adventure"):
         if check_avail(date, time, guests):
             save_booking(name, email, date, time, service, guests, infants, lunch_choices, payment_method)
             st.success("Booking Saved! See you soon!")
+            st.session_state.review = False
         else:
             st.error("Slot full. Please try another date and time")
 
